@@ -4,17 +4,17 @@ import { MealPlanStore } from '../stores/meal-plan';
 export class MealPlan {
   readonly id: string;
   readonly store: MealPlanStore;
-  title: string;
+  name: string;
 
   constructor(store: MealPlanStore) {
     makeObservable(this, {
       id: false,
       store: false,
-      title: observable,
+      name: observable,
       delete: action,
     });
     this.id = crypto.randomUUID();
-    this.title = 'Untitled';
+    this.name = 'Untitled';
     this.store = store;
   }
 
