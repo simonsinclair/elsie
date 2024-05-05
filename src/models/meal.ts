@@ -4,7 +4,7 @@ import { MealStore } from '../stores/meal';
 
 interface Properties {
   store: MealStore;
-  meal: Omit<Meal, 'id'>;
+  meal: Pick<Meal, 'name' | 'type' | 'energy' | 'protein'>;
 }
 
 export class Meal {

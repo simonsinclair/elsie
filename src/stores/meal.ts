@@ -14,7 +14,7 @@ export class MealStore {
   }
 
   /** Append a new Meal to the store */
-  append(meal: Omit<Meal, 'id'>) {
+  append(meal: Pick<Meal, 'name' | 'type' | 'energy' | 'protein'>) {
     this.meals.push(new Meal({ store: this, meal }));
   }
 
