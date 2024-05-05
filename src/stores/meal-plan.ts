@@ -14,7 +14,8 @@ export class MealPlanStore {
   }
 
   append() {
-    this.mealPlans.push(new MealPlan(this));
+    const mealPlan = new MealPlan(this);
+    this.mealPlans.push(mealPlan);
   }
 
   remove(mealPlan: MealPlan) {
