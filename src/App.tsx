@@ -7,7 +7,6 @@ import { z } from 'zod';
 import { useMealPlanStore } from './hooks/useMealPlanStore';
 import { useMealStore } from './hooks/useMealStore';
 import { MealPlanList } from './components/MealPlanList';
-import { MealPlan } from './models/meal-plan';
 import {
   MealList,
   DialogBody,
@@ -28,17 +27,13 @@ const App = observer(() => {
   const dialog = useLocalObservable<{ type: 'NEW_MEAL' | null }>(() => ({
     type: null,
   }));
-  const meal = useLocalObservable<{
-    type: '' | MealType;
+  const state = useLocalObservable<{
+    mealType: '' | MealType;
   }>(() => ({
-    type: '',
+    mealType: '',
   }));
   const mealPlanStore = useMealPlanStore();
   const mealStore = useMealStore();
-
-  const handleMealPlanRemoveClick = (mealPlan: MealPlan) => {
-    mealPlanStore.remove(mealPlan);
-  };
 
   const handleMealSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -86,10 +81,10 @@ const App = observer(() => {
             <Select
               aria-label="Meal type"
               name="type"
-              value={meal.type}
+              value={state.mealType}
               onChange={action((event) => {
                 const mealType = event.target.value as '' | MealType;
-                meal.type = mealType;
+                state.mealType = mealType;
               })}
             >
               <option value="" />
@@ -101,7 +96,15 @@ const App = observer(() => {
             </Select>
           </header>
           <div className="flex-1 overflow-y-scroll">
-            <MealList meals={mealStore.meals} type={meal.type} />
+            <MealList
+              meals={mealStore.meals.filter((meal) => {
+                if (state.mealType === '') {
+                  return true;
+                } else {
+                  return meal.type === state.mealType;
+                }
+              })}
+            />
           </div>
           <footer className="flex-none border-t p-2">
             <Button
@@ -190,10 +193,7 @@ const App = observer(() => {
           </footer>
         </div>
         <div className="flex flex-1 gap-2 overflow-x-scroll p-2">
-          <MealPlanList
-            mealPlans={mealPlanStore.mealPlans}
-            onRemoveClick={handleMealPlanRemoveClick}
-          />
+          <MealPlanList />
           <button
             onClick={() => {
               mealPlanStore.append();

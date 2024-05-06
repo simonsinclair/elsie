@@ -5,6 +5,7 @@ import { draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 
 import type { Meal as MealModel } from '../../models/meal';
 import clsx from 'clsx';
+import invariant from 'tiny-invariant';
 
 interface Properties {
   meal: MealModel;
@@ -18,12 +19,11 @@ export const Meal = observer(({ meal }: Properties) => {
 
   useEffect(() => {
     const element = elementRef.current;
-    if (element === null) {
-      throw new TypeError('Meal element reference is `null`');
-    }
+    invariant(element);
 
     return draggable({
       element,
+      getInitialData: () => ({ id: meal.id }),
       onDragStart: action(() => {
         state.isDragging = true;
       }),
@@ -31,7 +31,7 @@ export const Meal = observer(({ meal }: Properties) => {
         state.isDragging = false;
       }),
     });
-  }, [state]);
+  }, [meal.id, state]);
 
   return (
     <div
@@ -40,9 +40,8 @@ export const Meal = observer(({ meal }: Properties) => {
       className={clsx(
         'space-y-1 rounded bg-white p-2 shadow hover:text-blue-500',
         {
-          'opacity-50': state.isDragging,
           'cursor-grab': !state.isDragging,
-          'cursor-grabbing': state.isDragging,
+          'cursor-copy': state.isDragging,
         },
       )}
     >
