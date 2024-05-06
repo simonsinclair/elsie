@@ -27,16 +27,25 @@ export class MealPlan {
 
   /** Delete the MealPlan from the store */
   delete(mealPlan: MealPlan) {
+    if (!(mealPlan instanceof MealPlan)) {
+      throw new TypeError('`mealPlan` not an instance of MealPlan');
+    }
     this.store.remove(mealPlan);
   }
 
   /** Append a Meal to the MealPlan */
   append(meal: Meal) {
+    if (!(meal instanceof Meal)) {
+      throw new TypeError('`meal` not an instance of Meal');
+    }
     this.meals.push(meal);
   }
 
   /** Remove a Meal from the MealPlan */
   remove(meal: Meal) {
+    if (!(meal instanceof Meal)) {
+      throw new TypeError('`meal` not an instance of Meal');
+    }
     this.meals.splice(this.meals.indexOf(meal), 1);
   }
 }
