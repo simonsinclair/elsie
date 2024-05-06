@@ -3,12 +3,8 @@ import { observer } from 'mobx-react-lite';
 import { EllipsisHorizontalIcon } from '@heroicons/react/16/solid';
 
 import { MealPlan } from '../../models/meal-plan';
-import {
-  Dropdown,
-  DropdownButton,
-  DropdownMenu,
-  DropdownItem,
-} from '../dropdown';
+import { MealList } from '../MealList';
+import { Dropdown, DropdownButton, DropdownMenu, DropdownItem } from '../index';
 
 interface Properties {
   mealPlans: MealPlan[];
@@ -20,11 +16,11 @@ export const MealPlanList = observer(
     return mealPlans.map((mealPlan) => (
       <article
         key={mealPlan.id}
-        className="p-2 w-64 shadow rounded bg-white flex-none"
+        className="flex w-64 flex-none flex-col rounded bg-white shadow"
       >
-        <header className="flex items-center justify-between gap-4">
+        <header className="flex flex-none items-center justify-between gap-4 border-b p-2">
           <input
-            className="border border-transparent hover:border-slate-300 p-1 rounded w-full font-bold"
+            className="w-full rounded border border-transparent p-1 font-bold hover:border-slate-300"
             type="text"
             name="name"
             id="name"
@@ -62,6 +58,9 @@ export const MealPlanList = observer(
             </DropdownMenu>
           </Dropdown>
         </header>
+        <div className="flex flex-1 flex-col gap-2 overflow-y-scroll px-2">
+          <MealList meals={mealPlan.meals} />
+        </div>
       </article>
     ));
   },
