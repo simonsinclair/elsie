@@ -23,7 +23,7 @@ export const Meal = observer(({ meal }: Properties) => {
 
     return draggable({
       element,
-      getInitialData: () => ({ id: meal.id }),
+      getInitialData: () => ({ meal }),
       onDragStart: action(() => {
         state.isDragging = true;
       }),
@@ -31,7 +31,7 @@ export const Meal = observer(({ meal }: Properties) => {
         state.isDragging = false;
       }),
     });
-  }, [meal.id, state]);
+  }, [meal, state]);
 
   return (
     <div

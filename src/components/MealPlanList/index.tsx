@@ -11,16 +11,11 @@ export const MealPlanList = observer(() => {
     mealPlanStore.remove(mealPlan);
   };
 
-  const handleMealDrop = (id: MealPlanModel['id']) => {
-    console.log(id);
-  };
-
   return mealPlanStore.mealPlans.map((mealPlan) => (
     <MealPlan
       key={mealPlan.id}
       mealPlan={mealPlan}
       onRemoveClick={handleRemoveClick}
-      onMealDrop={handleMealDrop}
     />
   ));
 });
