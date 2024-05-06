@@ -94,7 +94,7 @@ export const MealPlan = observer(({ mealPlan, onRemoveClick }: Properties) => {
           </DropdownMenu>
         </Dropdown>
       </header>
-      <div className="flex flex-1 flex-col gap-2 overflow-y-scroll px-2">
+      <div className="flex flex-1 flex-col gap-2 overflow-y-scroll">
         <MealList meals={mealPlan.meals} />
       </div>
     </article>
