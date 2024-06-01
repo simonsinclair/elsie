@@ -1,21 +1,41 @@
-import { numeric, pgTable, text, uuid } from 'drizzle-orm/pg-core';
+import { customType, pgTable, text, uuid } from 'drizzle-orm/pg-core';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
+import { z } from 'zod';
 
+const numeric = customType<{
+  data: number;
+  driverData: number;
+}>({
+  dataType: () => 'numeric',
+  fromDriver: (value) => value,
+});
+
+/**
+ * MEAL PLAN.
+ */
 export const mealPlans = pgTable('meal_plans', {
   id: uuid('id').primaryKey(),
   name: text('name'),
 });
 
+export const insertMealPlanSchema = createInsertSchema(mealPlans);
+export const selectMealPlanSchema = createSelectSchema(mealPlans);
+
+/**
+ * MEAL.
+ */
 export const meals = pgTable('meals', {
   id: uuid('id').primaryKey(),
   name: text('name').notNull(),
   energy: numeric('energy').notNull(),
   protein: numeric('protein').notNull(),
-  mealPlanId: uuid('meal_plan_id').references(() => mealPlans.id),
 });
 
-export const insertMealSchema = createInsertSchema(meals);
-export const selectMealSchema = createSelectSchema(meals);
-
-export const insertMealPlanSchema = createInsertSchema(mealPlans);
-export const selectMealPlanSchema = createSelectSchema(mealPlans);
+export const insertMealSchema = createInsertSchema(meals, {
+  energy: z.number(),
+  protein: z.number(),
+});
+export const selectMealSchema = createSelectSchema(meals, {
+  energy: z.number(),
+  protein: z.number(),
+});
