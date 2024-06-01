@@ -4,8 +4,8 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 
 import App from './App.tsx';
-import { MealStoreContext } from './context/MealStore.ts';
-import { MealPlanStoreContext } from './context/MealPlanStore.ts';
+import { MealStoreContext } from './contexts/MealStore.ts';
+import { MealPlanStoreContext } from './contexts/MealPlanStore.ts';
 import { MealStore } from './stores/meal.ts';
 import { MealPlanStore } from './stores/meal-plan.ts';
 

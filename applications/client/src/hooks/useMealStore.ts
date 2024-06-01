@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 
-import { MealStoreContext } from '../context/MealStore';
+import { MealStoreContext } from '../contexts/MealStore';
 
 export const useMealStore = () => {
   const context = useContext(MealStoreContext);
