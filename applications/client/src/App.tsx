@@ -63,7 +63,7 @@ const App = observer(() => {
       });
       dialog.type = null;
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
