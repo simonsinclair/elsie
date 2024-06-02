@@ -1,5 +1,7 @@
 import WebSocket from 'ws';
 
+import { client } from './database';
+
 const PORT = 4000;
 
 const server = new WebSocket.WebSocketServer({
@@ -12,6 +14,15 @@ const server = new WebSocket.WebSocketServer({
  * clients issues pings, plus a conservative assumption of the latency.
  */
 const TIMEOUT_MS = 32_000;
+
+server.on('listening', async () => {
+  await client.listen('table_actions_insert', (value) => {
+    console.log('notification', value);
+    /**
+     * @todo Send `value` to all connected websocket clients.
+     */
+  });
+});
 
 server.on('connection', (websocket) => {
   console.log('websocket server: connection');
