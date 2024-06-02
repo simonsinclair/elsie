@@ -11,6 +11,7 @@ import { MealPlanStoreContext } from './contexts/MealPlanStore.ts';
 import { MealStore } from './stores/meal.ts';
 import { MealPlanStore } from './stores/meal-plan.ts';
 import { client } from './services/api.ts';
+import { ResilientWebSocket } from './services/websocket.ts';
 
 interface Transaction {
   id: string;
@@ -52,32 +53,15 @@ queueProcessor(
   1000,
 );
 
-const websocket = new WebSocket(import.meta.env.VITE_WEB_SOCKET_URL);
+const websocket = new ResilientWebSocket((data) => {
+  console.log('received', data);
+});
 
-let timeout: ReturnType<typeof setTimeout>;
-
-const heartbeat = () => {
-  clearTimeout(timeout);
-  timeout = setTimeout(() => {
-    websocket.close();
-  }, 30_000 + 10_000);
-};
-
-websocket.onopen = () => {
-  heartbeat();
-  console.log('websocket: opened');
-};
-
-websocket.onmessage = ({ data }) => {
-  if (data === 'ping') {
-    websocket.send('pong');
-    heartbeat();
+setInterval(() => {
+  if (websocket.state === 'READY') {
+    websocket.send({ type: 'ping' });
   }
-};
-
-websocket.onclose = () => {
-  console.log('websocket: closed');
-};
+}, 30_000);
 
 ReactDOM.createRoot(container).render(
   <React.StrictMode>

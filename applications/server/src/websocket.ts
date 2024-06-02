@@ -2,48 +2,57 @@ import WebSocket from 'ws';
 
 const PORT = 4000;
 
-class ElsieWebSocket extends WebSocket {
-  isAlive?: boolean;
-}
-
 const server = new WebSocket.WebSocketServer({
   port: PORT,
-  WebSocket: ElsieWebSocket,
 });
 
+/**
+ * The period (in ms) given to clients to communicate with the server before
+ * their connections are terminated. This should be equal to the interval
+ * clients issues pings, plus a conservative assumption of the latency.
+ */
+const TIMEOUT_MS = 32_000;
+
 server.on('connection', (websocket) => {
-  websocket.isAlive = true;
+  console.log('websocket server: connection');
+
+  let timeout = setTimeout(() => {
+    websocket.terminate();
+    console.log('websocket: terminated');
+  }, TIMEOUT_MS);
+
+  websocket.on('message', (message) => {
+    try {
+      const data = JSON.parse(message.toString());
+
+      if (data.type === 'initialise') {
+        websocket.send(JSON.stringify({ type: 'initialise' }));
+      }
+
+      if (data.type === 'ping') {
+        websocket.send(JSON.stringify({ type: 'pong' }));
+
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+          websocket.terminate();
+          console.log('websocket: terminated');
+        }, TIMEOUT_MS);
+      }
+    } catch (error) {
+      console.error(`websocket: invalid message`);
+    }
+  });
 
   websocket.on('error', (error) => {
     console.error('websocket: error', error);
   });
 
-  websocket.on('message', (data) => {
-    const message = data.toString();
-
-    if (message === 'pong') {
-      websocket.isAlive = true;
-      console.log('websocket: received pong');
-    }
+  websocket.on('close', () => {
+    console.log('websocket: closed');
+    clearTimeout(timeout);
   });
-
-  console.log('websocket: connected');
 });
 
-const interval = setInterval(() => {
-  for (const websocket of server.clients) {
-    if (websocket.isAlive) {
-      websocket.isAlive = false;
-      websocket.send('ping');
-      console.log('websocket: sent ping');
-    } else {
-      websocket.terminate();
-      console.log('websocket: terminated');
-    }
-  }
-}, 30_000);
-
 server.on('close', () => {
-  console.log('server: closed');
-  clearInterval(interval);
+  console.log('websocket server: closed');
 });
