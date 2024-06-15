@@ -3,8 +3,8 @@
   "name": "server",
   "version": "0.1.0",
   "scripts": {
-    "dev:http": "tsx watch src/http.ts",
-    "dev:websocket": "tsx watch src/websocket.ts",
+    "dev:http": "tsx watch --clear-screen=false src/http.ts",
+    "dev:websocket": "tsx watch --clear-screen=false src/websocket.ts",
     "dev:database": "docker compose up",
     "test": "tsc --noEmit"
   },
