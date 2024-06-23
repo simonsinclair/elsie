@@ -35,6 +35,9 @@ export class ResilientWebSocket {
     this.websocket.addEventListener('close', this.onClose);
     this.websocket.addEventListener('error', this.onError);
 
+    /**
+     * @todo WebSocket creation might fail, but we still log this.
+     */
     console.log('websocket: created');
   };
 
