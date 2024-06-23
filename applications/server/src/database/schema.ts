@@ -1,4 +1,11 @@
-import { customType, pgTable, text, uuid } from 'drizzle-orm/pg-core';
+import {
+  customType,
+  jsonb,
+  pgTable,
+  serial,
+  text,
+  uuid,
+} from 'drizzle-orm/pg-core';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 
@@ -9,6 +16,18 @@ const numeric = customType<{
   dataType: () => 'numeric',
   fromDriver: (value) => value,
 });
+
+/**
+ * ACTIONS.
+ */
+export const actions = pgTable('actions', {
+  id: serial('id').primaryKey(),
+  type: text('type', { enum: ['create'] }).notNull(),
+  data: jsonb('data').$type<{}>().notNull(),
+});
+
+export const insertActionSchema = createInsertSchema(actions);
+export const selectActionSchema = createSelectSchema(actions);
 
 /**
  * MEAL PLAN.
