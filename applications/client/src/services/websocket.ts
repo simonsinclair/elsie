@@ -2,7 +2,7 @@ import { serverMessageSchema } from '../types';
 
 type HandleData = (data: Record<string, unknown>) => void;
 
-export class ResilientWebSocket {
+export class WebSocketClient {
   static reconnectTimeout = 2000;
   private websocket: WebSocket | null;
   private handleData: HandleData;
@@ -71,7 +71,7 @@ export class ResilientWebSocket {
       setTimeout(() => {
         this.recreateScheduled = false;
         this.create();
-      }, ResilientWebSocket.reconnectTimeout);
+      }, WebSocketClient.reconnectTimeout);
       this.recreateScheduled = true;
     }
   };
@@ -83,7 +83,7 @@ export class ResilientWebSocket {
       setTimeout(() => {
         this.recreateScheduled = false;
         this.create();
-      }, ResilientWebSocket.reconnectTimeout);
+      }, WebSocketClient.reconnectTimeout);
       this.recreateScheduled = true;
     }
   };

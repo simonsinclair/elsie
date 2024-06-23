@@ -11,7 +11,7 @@ import { MealPlanStoreContext } from './contexts/MealPlanStore.ts';
 import { MealStore } from './stores/meal.ts';
 import { MealPlanStore } from './stores/meal-plan.ts';
 import { client } from './services/api.ts';
-import { ResilientWebSocket } from './services/websocket.ts';
+import { WebSocketClient } from './services/websocket.ts';
 
 interface Transaction {
   id: string;
@@ -53,7 +53,7 @@ queueProcessor(
   1000,
 );
 
-const websocket = new ResilientWebSocket((data) => {
+const websocket = new WebSocketClient((data) => {
   console.log('received', data);
 });
 
