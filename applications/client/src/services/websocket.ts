@@ -26,7 +26,7 @@ export class ResilientWebSocket {
       try {
         this.websocket.close();
       } catch {
-        //
+        // no-op
       }
     }
     this.websocket = new WebSocket(import.meta.env.VITE_WEB_SOCKET_URL);
