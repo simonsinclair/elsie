@@ -12,15 +12,30 @@ import {
   meals,
 } from './database/schema';
 
-const STATE = {};
-
 const PORT = 3000;
 
 const application = new Hono();
 
 const router = application
   .get('/state', async (context) => {
-    return context.json(STATE);
+    try {
+      const { result, lastActionId } = await database.transaction(
+        async (transaction) => {
+          const mealsResult = await transaction.select().from(meals);
+          const mealPlansResult = await transaction.select().from(mealPlans);
+          const [latestAction] = await transaction
+            .select({ id: actions.id })
+            .from(actions)
+            .orderBy(desc(actions.id))
+            .limit(1);
+          const lastActionId = latestAction ? latestAction.id : null;
+          return { result: [...mealsResult, ...mealPlansResult], lastActionId };
+        },
+      );
+      return context.json({ result, lastActionId }, 201);
+    } catch (error) {
+      return context.json({ message: 'Failed to select state' }, 500);
+    }
   })
   .post(
     '/meal-plans',
@@ -40,7 +55,7 @@ const router = application
         });
         return context.json({ results }, 201);
       } catch (error) {
-        return context.text('Failed to insert meal plan', 500);
+        return context.json({ message: 'Failed to insert meal plan' }, 500);
       }
     },
   )
